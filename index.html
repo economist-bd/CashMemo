@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হিমেল মেডিকেল হল - ক্যাশ মেমো</title>
+    <style>
+        /* 기본 리셋 및 폰트 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Kalpurush', 'SolaimanLipi', Arial, sans-serif;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 메인 컨테이너 (A4 용지 느낌) */
+        .memo-container {
+            width: 800px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border: 2px solid #285497;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        /* 헤더 섹션 (로고, 이름, 주소) */
+        .header-top-text {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+            color: #285497;
+        }
+        
+        .header-section {
+            display: flex;
+            border-bottom: 2px solid #285497;
+            background-color: #f8fbff;
+        }
+
+        /* 왼쪽 'ক্যাশ মেমো' 세로 텍스트 */
+        .left-sidebar {
+            width: 50px;
+            background-color: #285497;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 0;
+            border-top-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin: 5px;
+        }
+        .left-sidebar span {
+            margin: 2px 0;
+        }
+
+        /* 중앙 헤더 정보 */
+        .main-header {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px 20px;
+        }
+        .bismillah {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .shop-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #285497;
+            margin-bottom: 5px;
+        }
+        .slogan {
+            font-size: 16px;
+            color: #d32f2f;
+            margin-bottom: 8px;
+        }
+        .proprietor {
+            display: inline-block;
+            background-color: #e0eaf5;
+            border: 1px solid #285497;
+            border-radius: 15px;
+            padding: 4px 15px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+        .contact-info {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .description {
+            font-size: 13px;
+        }
+
+        /* 주소 표시줄 */
+        .address-bar {
+            background-color: #285497;
+            color: white;
+            text-align: center;
+            padding: 6px;
+            font-size: 15px;
+            border-top: 2px solid #285497;
+            border-bottom: 2px solid #285497;
+        }
+
+        /* 고객 정보 섹션 */
+        .customer-info {
+            padding: 15px 20px;
+            font-size: 15px;
+        }
+        .row-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .input-line {
+            border-bottom: 1px dotted #333;
+            flex-grow: 1;
+            margin-left: 10px;
+            display: inline-block;
+            min-height: 20px;
+            color: #555;
+            padding-left: 5px;
+        }
+        .customer-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            background-color: #e0eaf5;
+            border: 1px solid #285497;
+            padding: 5px;
+        }
+        .customer-row label {
+            width: 60px;
+            font-weight: bold;
+            color: #285497;
+        }
+
+        /* 테이블 영역 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #285497;
+            padding: 6px 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #285497;
+            color: white;
+            font-weight: normal;
+            font-size: 16px;
+        }
+        td.text-left {
+            text-align: left;
+        }
+        td a {
+            color: white;
+            background-color: #28a745;
+            padding: 3px 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        td a:hover {
+            background-color: #218838;
+        }
+
+        /* 결산 영역 */
+        .total-box {
+            display: flex;
+            justify-content: flex-end;
+            margin-right: 0;
+        }
+        .total-table {
+            width: 250px;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        .total-table td {
+            border: 1px solid #285497;
+            padding: 5px;
+            text-align: left;
+        }
+        .total-table td:first-child {
+            background-color: #e0eaf5;
+            width: 80px;
+            color: #285497;
+            font-weight: bold;
+        }
+
+        /* 푸터 영역 (서명 등) */
+        .footer-section {
+            padding: 10px 20px;
+        }
+        .in-words {
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        .in-words span {
+            border-bottom: 1px dotted #333;
+            display: inline-block;
+            width: calc(100% - 60px);
+        }
+        
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+        }
+        .signature {
+            text-align: center;
+            border-top: 1px dotted #333;
+            width: 150px;
+            padding-top: 5px;
+            font-size: 14px;
+        }
+        .return-policy {
+            background-color: #285497;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="memo-container">
+    
+    <div class="header-section">
+        <!-- বাম পাশের ক্যাশ মেমো লেখা -->
+        <div class="left-sidebar">
+            <span>ক্যা</span>
+            <span>শ</span>
+            <br>
+            <span>মে</span>
+            <span>মো</span>
+        </div>
+
+        <!-- মূল হেডার তথ্য -->
+        <div class="main-header">
+            <div class="bismillah">বিসমিল্লাহির রাহমানির রাহিম</div>
+            <div class="shop-name">হিমেল মেডিকেল হল</div>
+            <div class="slogan">আপনার স্বাস্থ্য সুরক্ষাই আমাদের মূল লক্ষ্য</div>
+            <div class="proprietor">প্রোঃ মোঃ মঞ্জুরুল হক</div>
+            <div class="contact-info">
+                মোবাইলঃ ০১৭১২ ২৪৭৫ ৮৮, ইমেলঃ himel452@gmail.com
+            </div>
+            <div class="description">
+                এখানে যাবতীয় ঔষধ পাইকারী ও খুচরা বিক্রয় করা হয়।
+            </div>
+        </div>
+    </div>
+
+    <!-- ঠিকানা বার -->
+    <div class="address-bar">
+        করিমগঞ্জ বাজার, করিমগঞ্জ কিশোরগঞ্জ।
+    </div>
+
+    <!-- কাস্টমার ও মেমোর তথ্য -->
+    <div class="customer-info">
+        <div class="row-flex">
+            <div style="width: 50%; display: flex;">
+                <strong>ক্রমিক নং-</strong> <span class="input-line">১৯১১</span>
+            </div>
+            <div style="width: 40%; display: flex;">
+                <strong>তারিখ:</strong> <span class="input-line">........./........../২০২...</span>
+            </div>
+        </div>
+        
+        <div class="customer-row">
+            <label>নামঃ</label>
+            <div class="input-line"></div>
+        </div>
+        <div class="customer-row">
+            <label>ঠিকানাঃ</label>
+            <div class="input-line"></div>
+        </div>
+    </div>
+
+    <!-- মালের বিবরণ (এআই টুলস) টেবিল -->
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">সিরিয়াল</th>
+                <th style="width: 47%;">মালের বিবরণ (এআই টুলস)</th>
+                <th style="width: 25%;">দর/প্রাইস (আনুমানিক)</th>
+                <th style="width: 20%;">মূল্য/ফ্রি লিংক</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>১</td>
+                <td class="text-left">ChatGPT (OpenAI) - সেরা চ্যাটবট</td>
+                <td>$20 / মাসিক</td>
+                <td><a href="https://chat.openai.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>২</td>
+                <td class="text-left">Claude (Anthropic) - লং কন্টেন্ট লেখা</td>
+                <td>$20 / মাসিক</td>
+                <td><a href="https://claude.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৩</td>
+                <td class="text-left">Gemini (Google) - গুগলের এআই</td>
+                <td>$20 / মাসিক</td>
+                <td><a href="https://gemini.google.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৪</td>
+                <td class="text-left">Midjourney - ইমেজ জেনারেশন</td>
+                <td>$10 / মাসিক</td>
+                <td><a href="https://www.midjourney.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৫</td>
+                <td class="text-left">Canva Magic Studio - ডিজাইন ও প্রেজেন্টেশন</td>
+                <td>$120 / বাৎসরিক</td>
+                <td><a href="https://www.canva.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৬</td>
+                <td class="text-left">Jasper AI - প্রফেশনাল কপিরাইটিং</td>
+                <td>$39 / মাসিক</td>
+                <td><a href="https://www.jasper.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৭</td>
+                <td class="text-left">Copy.ai - সোশ্যাল মিডিয়া কন্টেন্ট</td>
+                <td>$49 / মাসিক</td>
+                <td><a href="https://www.copy.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৮</td>
+                <td class="text-left">Notion AI - নোটস ও প্রজেক্ট ম্যানেজমেন্ট</td>
+                <td>$10 / মাসিক</td>
+                <td><a href="https://www.notion.so/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>৯</td>
+                <td class="text-left">Synthesia - টেক্সট থেকে এআই ভিডিও</td>
+                <td>$22 / মাসিক</td>
+                <td><a href="https://www.synthesia.io/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১০</td>
+                <td class="text-left">Runway ML - ভিডিও এডিটিং ও জেনারেশন</td>
+                <td>$15 / মাসিক</td>
+                <td><a href="https://runwayml.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১১</td>
+                <td class="text-left">ElevenLabs - রিয়েলিস্টিক ভয়েস ওভার</td>
+                <td>$5 / মাসিক</td>
+                <td><a href="https://elevenlabs.io/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১২</td>
+                <td class="text-left">Leonardo AI - গেম অ্যাসেট ও আর্ট</td>
+                <td>$12 / মাসিক</td>
+                <td><a href="https://leonardo.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৩</td>
+                <td class="text-left">Gamma App - এআই প্রেজেন্টেশন তৈরি</td>
+                <td>$16 / মাসিক</td>
+                <td><a href="https://gamma.app/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৪</td>
+                <td class="text-left">Writesonic - এসইও অপটিমাইজড আর্টিকেল</td>
+                <td>$20 / মাসিক</td>
+                <td><a href="https://writesonic.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৫</td>
+                <td class="text-left">InVideo AI - প্রম্পট থেকে ইউটিউব ভিডিও</td>
+                <td>$25 / মাসিক</td>
+                <td><a href="https://invideo.io/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৬</td>
+                <td class="text-left">HeyGen - এআই অ্যাভাটার ভিডিও</td>
+                <td>$29 / মাসিক</td>
+                <td><a href="https://www.heygen.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৭</td>
+                <td class="text-left">QuillBot - রিরাইটিং ও গ্রামার চেক</td>
+                <td>$100 / বাৎসরিক</td>
+                <td><a href="https://quillbot.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৮</td>
+                <td class="text-left">Pictory - স্ক্রিপ্ট থেকে ভিডিও মেকার</td>
+                <td>$23 / মাসিক</td>
+                <td><a href="https://pictory.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>১৯</td>
+                <td class="text-left">Suno AI - এআই মিউজিক জেনারেটর</td>
+                <td>$10 / মাসিক</td>
+                <td><a href="https://suno.com/" target="_blank">ফ্রি</a></td>
+            </tr>
+            <tr>
+                <td>২০</td>
+                <td class="text-left">Perplexity AI - রিসার্চ ও সার্চ ইঞ্জিন</td>
+                <td>$20 / মাসিক</td>
+                <td><a href="https://www.perplexity.ai/" target="_blank">ফ্রি</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer-section">
+        <!-- 결산 테이블 (우측 하단) -->
+        <div class="total-box">
+            <table class="total-table">
+                <tr>
+                    <td>মোট -</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>জমা -</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>বাকী -</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="in-words">
+            কথায় : <span></span>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="signature">
+                ক্রেতার স্বাক্ষর
+            </div>
+            
+            <div class="return-policy">
+                বিক্রিত মাল ফেরত নেওয়া হয় না।
+            </div>
+
+            <div class="signature">
+                বিক্রেতার স্বাক্ষর
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+
