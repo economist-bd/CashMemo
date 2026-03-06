@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হিমেল মেডিকেল হল - এআই টুলস ক্যাশ মেমো</title>
+    <style>
+        /* বেসিক রিসেট */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Kalpurush', 'SolaimanLipi', Arial, sans-serif;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* পপ-আপ মোডাল ডিজাইন */
+        #user-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #285497;
+        }
+        .modal-content h3 {
+            color: #285497;
+            margin-bottom: 20px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .modal-content button {
+            background: #285497;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .modal-content button:hover {
+            background: #1e4075;
+        }
+
+        /* ক্যাশ মেমো কন্টেইনার */
+        .memo-container {
+            width: 800px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border: 2px solid #285497;
+            padding-bottom: 20px;
+            position: relative;
+            display: none; /* প্রথমে লুকিয়ে থাকবে, মোডাল সাবমিট হলে দেখাবে */
+        }
+
+        /* হেডার সেকশন */
+        .header-section {
+            display: flex;
+            border-bottom: 2px solid #285497;
+            background-color: #f8fbff;
+        }
+
+        .left-sidebar {
+            width: 50px;
+            background-color: #285497;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 0;
+            border-top-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin: 5px;
+        }
+        .left-sidebar span { margin: 2px 0; }
+
+        .main-header {
+            flex-grow: 1;
+            text-align: center;
+            padding: 10px 20px;
+        }
+        .bismillah { font-size: 14px; margin-bottom: 5px; }
+        .shop-name { font-size: 32px; font-weight: bold; color: #285497; margin-bottom: 5px; }
+        .slogan { font-size: 16px; color: #d32f2f; margin-bottom: 8px; }
+        .proprietor {
+            display: inline-block;
+            background-color: #e0eaf5;
+            border: 1px solid #285497;
+            border-radius: 15px;
+            padding: 4px 15px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+        .contact-info { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .description { font-size: 13px; }
+
+        .address-bar {
+            background-color: #285497;
+            color: white;
+            text-align: center;
+            padding: 6px;
+            font-size: 15px;
+            border-top: 2px solid #285497;
+            border-bottom: 2px solid #285497;
+        }
+
+        /* কাস্টমার ইনফো */
+        .customer-info { padding: 15px 20px; font-size: 16px; }
+        .row-flex { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .input-line {
+            border-bottom: 1px dotted #333;
+            flex-grow: 1;
+            margin-left: 10px;
+            display: inline-block;
+            min-height: 20px;
+            color: #111;
+            font-weight: bold;
+            padding-left: 5px;
+        }
+        .customer-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            background-color: #e0eaf5;
+            border: 1px solid #285497;
+            padding: 5px;
+        }
+        .customer-row label { width: 60px; font-weight: bold; color: #285497; }
+
+        /* টেবিল */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #285497;
+            padding: 6px 10px;
+            text-align: center;
+            font-size: 15px;
+        }
+        th { background-color: #285497; color: white; font-weight: normal; font-size: 16px; }
+        td.text-left { text-align: left; font-weight: bold;}
+        td a {
+            color: white;
+            background-color: #28a745;
+            padding: 3px 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        td a:hover { background-color: #218838; }
+
+        /* 결산 (Calculation) */
+        .total-box { display: flex; justify-content: flex-end; margin-right: 0; }
+        .total-table { width: 300px; border-collapse: collapse; margin-bottom: 10px; }
+        .total-table td { border: 1px solid #285497; padding: 5px 10px; text-align: right; font-weight: bold;}
+        .total-table td:first-child {
+            background-color: #e0eaf5;
+            width: 100px;
+            color: #285497;
+            text-align: left;
+        }
+
+        /* ফুটার */
+        .footer-section { padding: 10px 20px; }
+        .in-words { margin-bottom: 20px; font-size: 16px; font-weight: bold; }
+        .in-words span {
+            border-bottom: 1px dotted #333;
+            display: inline-block;
+            width: calc(100% - 60px);
+            color: #d32f2f;
+        }
+        
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 50px;
+        }
+        .signature-box {
+            text-align: center;
+            width: 180px;
+        }
+        .sig-name {
+            font-size: 22px;
+            font-style: italic;
+            color: #1e4075;
+            min-height: 30px;
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'Brush Script MT', 'cursive', sans-serif;
+        }
+        .sig-line {
+            border-top: 1px dotted #333;
+            padding-top: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .return-policy {
+            background-color: #285497;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .memo-container { box-shadow: none; border: 1px solid #000; }
+            td a { display: none; } /* প্রিন্টে বাটন দেখাবে না */
+            td.free-text::after { content: "ফ্রি (লিংক)"; font-size: 13px; color: #000;}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ইউজার ইনফো নেওয়ার মোডাল -->
+<div id="user-modal">
+    <div class="modal-content">
+        <h3>ক্যাশ মেমো জেনারেট করুন</h3>
+        <p style="margin-bottom: 15px; font-size: 14px; color: #555;">আপনার নাম ও ঠিকানা লিখুন, সিস্টেম স্বয়ংক্রিয়ভাবে মেমো তৈরি করবে।</p>
+        <input type="text" id="input-name" placeholder="আপনার নাম (ক্রেতা)" required>
+        <input type="text" id="input-address" placeholder="আপনার ঠিকানা" required>
+        <button onclick="generateMemo()">মেমো তৈরি করুন</button>
+    </div>
+</div>
+
+<div class="memo-container" id="memo-container">
+    
+    <div class="header-section">
+        <div class="left-sidebar">
+            <span>ক্যা</span><span>শ</span><br><span>মে</span><span>মো</span>
+        </div>
+
+        <div class="main-header">
+            <div class="bismillah">বিসমিল্লাহির রাহমানির রাহিম</div>
+            <div class="shop-name">হিমেল মেডিকেল হল</div>
+            <div class="slogan">আপনার স্বাস্থ্য সুরক্ষাই আমাদের মূল লক্ষ্য</div>
+            <div class="proprietor">প্রোঃ মোঃ মঞ্জুরুল হক</div>
+            <div class="contact-info">
+                মোবাইলঃ ০১৭১২ ২৪৭৫ ৮৮, ইমেলঃ himel452@gmail.com
+            </div>
+            <div class="description">এখানে যাবতীয় ঔষধ পাইকারী ও খুচরা বিক্রয় করা হয়।</div>
+        </div>
+    </div>
+
+    <div class="address-bar">
+        করিমগঞ্জ বাজার, করিমগঞ্জ, কিশোরগঞ্জ।
+    </div>
+
+    <div class="customer-info">
+        <div class="row-flex">
+            <div style="width: 50%; display: flex;">
+                <strong>ক্রমিক নং-</strong> <span class="input-line" id="invoice-no"></span>
+            </div>
+            <div style="width: 40%; display: flex;">
+                <strong>তারিখ:</strong> <span class="input-line" id="invoice-date"></span>
+            </div>
+        </div>
+        
+        <div class="customer-row">
+            <label>নামঃ</label>
+            <div class="input-line" id="display-name"></div>
+        </div>
+        <div class="customer-row">
+            <label>ঠিকানাঃ</label>
+            <div class="input-line" id="display-address"></div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">নং</th>
+                <th style="width: 47%;">মালের বিবরণ (এআই টুলস)</th>
+                <th style="width: 25%;">বাৎসরিক সাবস্ক্রিপশন (টাকায়)</th>
+                <th style="width: 20%;">মূল্য/ফ্রি লিংক</th>
+            </tr>
+        </thead>
+        <tbody id="tools-tbody">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে ডাটা বসানো হবে -->
+        </tbody>
+    </table>
+
+    <div class="footer-section">
+        <div class="total-box">
+            <table class="total-table">
+                <tr>
+                    <td>মোট -</td>
+                    <td id="total-amount"></td>
+                </tr>
+                <tr>
+                    <td>জমা -</td>
+                    <td id="deposit-amount"></td>
+                </tr>
+                <tr>
+                    <td>বাকী -</td>
+                    <td>০ (শূন্য) টাকা</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="in-words">
+            কথায় : <span id="amount-in-words"></span>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="signature-box">
+                <span class="sig-name" id="buyer-signature"></span>
+                <div class="sig-line">ক্রেতার স্বাক্ষর</div>
+            </div>
+            
+            <div class="return-policy">
+                বিক্রিত মাল ফেরত নেওয়া হয় না।
+            </div>
+
+            <div class="signature-box">
+                <span class="sig-name" style="font-size: 26px;">মোঃ মঞ্জুরুল হক</span>
+                <div class="sig-line">বিক্রেতার স্বাক্ষর</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // এআই টুলসের তালিকা এবং তাদের বাৎসরিক খরচ (ডলারে)
+    // ১ ডলার = ১২০ টাকা ধরে হিসাব করা হবে
+    const aiTools = [
+        { name: "ChatGPT (OpenAI) - সেরা চ্যাটবট", annualUSD: 240, link: "https://chat.openai.com/" },
+        { name: "Claude (Anthropic) - লং কন্টেন্ট লেখা", annualUSD: 240, link: "https://claude.ai/" },
+        { name: "Gemini (Google) - গুগলের এআই", annualUSD: 240, link: "https://gemini.google.com/" },
+        { name: "Midjourney - ইমেজ জেনারেশন", annualUSD: 120, link: "https://www.midjourney.com/" },
+        { name: "Canva Magic Studio - ডিজাইন", annualUSD: 120, link: "https://www.canva.com/" },
+        { name: "Jasper AI - প্রফেশনাল কপিরাইটিং", annualUSD: 468, link: "https://www.jasper.ai/" },
+        { name: "Copy.ai - সোশ্যাল মিডিয়া কন্টেন্ট", annualUSD: 588, link: "https://www.copy.ai/" },
+        { name: "Notion AI - নোটস ও প্রজেক্ট", annualUSD: 120, link: "https://www.notion.so/" },
+        { name: "Synthesia - টেক্সট থেকে ভিডিও", annualUSD: 264, link: "https://www.synthesia.io/" },
+        { name: "Runway ML - ভিডিও এডিটিং", annualUSD: 180, link: "https://runwayml.com/" },
+        { name: "ElevenLabs - রিয়েলিস্টিক ভয়েস", annualUSD: 60, link: "https://elevenlabs.io/" },
+        { name: "Leonardo AI - গেম অ্যাসেট ও আর্ট", annualUSD: 144, link: "https://leonardo.ai/" },
+        { name: "Gamma App - প্রেজেন্টেশন তৈরি", annualUSD: 192, link: "https://gamma.app/" },
+        { name: "Writesonic - এসইও আর্টিকেল", annualUSD: 240, link: "https://writesonic.com/" },
+        { name: "InVideo AI - ইউটিউব ভিডিও", annualUSD: 300, link: "https://invideo.io/" },
+        { name: "HeyGen - এআই অ্যাভাটার ভিডিও", annualUSD: 348, link: "https://www.heygen.com/" },
+        { name: "QuillBot - রিরাইটিং ও গ্রামার", annualUSD: 100, link: "https://quillbot.com/" },
+        { name: "Pictory - স্ক্রিপ্ট থেকে ভিডিও", annualUSD: 276, link: "https://pictory.ai/" },
+        { name: "Suno AI - এআই মিউজিক জেনারেটর", annualUSD: 120, link: "https://suno.com/" },
+        { name: "Perplexity AI - এআই সার্চ ইঞ্জিন", annualUSD: 240, link: "https://www.perplexity.ai/" }
+    ];
+
+    const usdToBdtRate = 120; // ডলার রেট
+
+    // ইংরেজি সংখ্যাকে বাংলায় রূপান্তর
+    function toBanglaDigit(num) {
+        const banglaDigits = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯' };
+        return num.toString().replace(/[0-9]/g, w => banglaDigits[w]);
+    }
+
+    // সংখ্যা থেকে বাংলা কথায় রূপান্তর ফাংশন
+    function numberToBanglaWords(num) {
+        if (num === 0) return 'শূন্য';
+        const numToWord = {
+            0: '', 1: 'এক', 2: 'দুই', 3: 'তিন', 4: 'চার', 5: 'পাঁচ', 6: 'ছয়', 7: 'সাত', 8: 'আট', 9: 'নয়', 10: 'দশ', 11: 'এগারো', 12: 'বারো', 13: 'তেরো', 14: 'চৌদ্দ', 15: 'পনেরো', 16: 'ষোল', 17: 'সতেরো', 18: 'আঠারো', 19: 'উনিশ',
+            20: 'বিশ', 21: 'একুশ', 22: 'বাইশ', 23: 'তেইশ', 24: 'চব্বিশ', 25: 'পঁচিশ', 26: 'ছাব্বিশ', 27: 'সাতাশ', 28: 'আঠাশ', 29: 'উনত্রিশ',
+            30: 'ত্রিশ', 31: 'একত্রিশ', 32: 'বত্রিশ', 33: 'তেত্রিশ', 34: 'চৌত্রিশ', 35: 'পঁয়ত্রিশ', 36: 'ছত্রিশ', 37: 'সাঁইত্রিশ', 38: 'আটত্রিশ', 39: 'উনচল্লিশ',
+            40: 'চল্লিশ', 41: 'একচল্লিশ', 42: 'বিয়াল্লিশ', 43: 'তেতাল্লিশ', 44: 'চুয়াল্লিশ', 45: 'পঁয়তাল্লিশ', 46: 'ছেচল্লিশ', 47: 'সাতচল্লিশ', 48: 'আটচল্লিশ', 49: 'উনপঞ্চাশ',
+            50: 'পঞ্চাশ', 51: 'একান্ন', 52: 'বায়ান্ন', 53: 'তিপ্পান্ন', 54: 'চুয়ান্ন', 55: 'পঞ্চান্ন', 56: 'ছাপ্পান্ন', 57: 'সাতান্ন', 58: 'আটান্ন', 59: 'উনষাট',
+            60: 'ষাট', 61: 'একষট্টি', 62: 'বাষট্টি', 63: 'তেষট্টি', 64: 'চৌষট্টি', 65: 'পঁয়ষট্টি', 66: 'ছেষট্টি', 67: 'সাতষট্টি', 68: 'আটষট্টি', 69: 'উনসত্তর',
+            70: 'সত্তর', 71: 'একাত্তর', 72: 'বাহাত্তর', 73: 'তিয়াত্তর', 74: 'চুয়াত্তর', 75: 'পঁচাত্তর', 76: 'ছিয়াত্তর', 77: 'সাতাত্তর', 78: 'আটাত্তর', 79: 'উনআশি',
+            80: 'আশি', 81: 'একাশি', 82: 'বিরাশি', 83: 'তিরাশি', 84: 'চুরাশি', 85: 'পঁচাশি', 86: 'ছিয়াশি', 87: 'সাতাশি', 88: 'অষ্টআশি', 89: 'উননব্বই',
+            90: 'নব্বই', 91: 'একানব্বই', 92: 'বিরানব্বই', 93: 'তিরানব্বই', 94: 'চুরানব্বই', 95: 'পঁচানব্বই', 96: 'ছিয়ানব্বই', 97: 'সাতানব্বই', 98: 'আটানব্বই', 99: 'নিরানব্বই'
+        };
+
+        let words = '';
+        let crore = Math.floor(num / 10000000);
+        num %= 10000000;
+        let lakh = Math.floor(num / 100000);
+        num %= 100000;
+        let thousand = Math.floor(num / 1000);
+        num %= 1000;
+        let hundred = Math.floor(num / 100);
+        num %= 100;
+
+        if (crore > 0) words += numberToBanglaWords(crore) + ' কোটি ';
+        if (lakh > 0) words += numToWord[lakh] + ' লক্ষ ';
+        if (thousand > 0) words += numToWord[thousand] + ' হাজার ';
+        if (hundred > 0) words += numToWord[hundred] + ' শত ';
+        if (num > 0) words += numToWord[num];
+
+        return words.trim() + ' টাকা মাত্র।';
+    }
+
+    // মেমো তৈরি করার মূল ফাংশন
+    function generateMemo() {
+        const nameInput = document.getElementById('input-name').value || 'অজ্ঞাত ক্রেতা';
+        const addressInput = document.getElementById('input-address').value || 'ঠিকানা দেওয়া হয়নি';
+
+        // ইউজার ইনফো বসানো
+        document.getElementById('display-name').innerText = nameInput;
+        document.getElementById('display-address').innerText = addressInput;
+        document.getElementById('buyer-signature').innerText = nameInput;
+
+        // অটো তারিখ ও ইনভয়েস নম্বর বসানো
+        let today = new Date();
+        let dateStr = today.toLocaleDateString('en-GB'); // DD/MM/YYYY
+        document.getElementById('invoice-date').innerText = toBanglaDigit(dateStr);
+        document.getElementById('invoice-no').innerText = toBanglaDigit(Math.floor(1000 + Math.random() * 9000)); // Random 4 digit ID
+
+        // টেবিল রেন্ডার এবং হিসাব করা
+        let tbody = document.getElementById('tools-tbody');
+        tbody.innerHTML = '';
+        let totalBdtAmount = 0;
+
+        aiTools.forEach((tool, index) => {
+            let annualBdt = tool.annualUSD * usdToBdtRate;
+            totalBdtAmount += annualBdt;
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${toBanglaDigit(index + 1)}</td>
+                <td class="text-left">${tool.name}</td>
+                <td>${toBanglaDigit(annualBdt.toLocaleString('en-US'))} ৳</td>
+                <td class="free-text"><a href="${tool.link}" target="_blank">ফ্রি</a></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // মোট ও জমা বসানো
+        let formattedTotal = toBanglaDigit(totalBdtAmount.toLocaleString('en-US')) + ' ৳';
+        document.getElementById('total-amount').innerText = formattedTotal;
+        document.getElementById('deposit-amount').innerText = formattedTotal;
+
+        // কথায় লেখা বসানো
+        document.getElementById('amount-in-words').innerText = numberToBanglaWords(totalBdtAmount);
+
+        // মোডাল হাইড করে মেমো শো করানো
+        document.getElementById('user-modal').style.display = 'none';
+        document.getElementById('memo-container').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
+
